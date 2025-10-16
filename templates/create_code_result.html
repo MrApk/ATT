@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Code Created</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>✅ Code Generated</h1>
+    <p><b>Class:</b> {{ class_name }} | <b>Year:</b> {{ year }} | <b>Subject:</b> {{ subject }}</p>
+    <p><b>Date:</b> {{ today }}</p>
+    <h2 style="color:#27ae60;">Code: {{ code }}</h2>
+
+    <p>📷 Share this QR with students:</p>
+    <div style="text-align:center;">
+      <img src="/{{ qr_path }}" class="qr-img" alt="QR Code">
+    </div>
+
+    <p style="margin-top:15px;">
+      <a href="/teacher" class="btn">⬅ Go to Dashboard</a>
+    </p>
+  </div>
+</body>
+</html>

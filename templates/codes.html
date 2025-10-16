@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Class Codes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="/static/style.css">
+
+</head>
+<body>
+  <div class="container dashboard">
+    <h1>📋 All Class Codes</h1>
+    <p>Welcome, {{teacher}} | <a href="/logout">Logout</a></p>
+    <div class="table-wrapper">
+      <table>
+        <tr>
+          <th>Date</th>
+          <th>Class</th>
+          <th>Year</th>
+          <th>Subject</th>
+          <th>Code</th>
+          <th>QR</th>
+        </tr>
+        {% for record in codes %}
+        <tr>
+          <td>{{ record.date }}</td>
+          <td>{{ record.class }}</td>
+          <td>{{ record.year }}</td>
+          <td>{{ record.subject }}</td>
+          <td>{{ record.code }}</td>
+          <td><a href="/qr/{{ record.class }}/{{ record.date }}/{{ record.year }}/{{ record.subject }}">📷 Generate QR</a></td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+    <p><a href="/teacher">⬅ Dashboard</a></p>
+  </div>
+</body>
+</html>

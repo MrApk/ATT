@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Teacher Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container dashboard">
+    <h1>Attendance Dashboard</h1>
+    <p>Welcome, {{teacher}} | <a href="/logout">Logout</a></p>
+    <p><a href="/create_code">➕ Create Class Code</a> | <a href="/codes">📋 View All Codes</a> | <a href="/unlock_device">🔑 Unlock Student Device</a></p>
+
+    <!-- 🔹 Filter Form -->
+    <form method="get" action="/teacher" class="filter-form">
+      <label>Class:</label>
+      <select name="class">
+        <option value="">All</option>
+        {% for c in classes %}
+          <option value="{{c}}" {% if filter_class==c %}selected{% endif %}>{{c}}</option>
+        {% endfor %}
+      </select>
+
+      <label>Year:</label>
+      <select name="year">
+        <option value="">All</option>
+        {% for y in years %}
+          <option value="{{y}}" {% if filter_year==y %}selected{% endif %}>{{y}}</option>
+        {% endfor %}
+      </select>
+
+      <label>Subject:</label>
+      <select name="subject">
+        <option value="">All</option>
+        {% for s in subjects %}
+          <option value="{{s}}" {% if filter_subject==s %}selected{% endif %}>{{s}}</option>
+        {% endfor %}
+      </select>
+
+      <label>Date:</label>
+      <input type="date" name="date" value="{{filter_date}}">
+
+      <button type="submit">🔍 Apply</button>
+      <a href="/teacher" class="btn">Reset</a>
+    </form>
+
+    {% if attendance %}
+    <div class="table-wrapper">
+      <table>
+        <tr>
+          <th>Student ID</th>
+          <th>Name</th>
+          <th>Class</th>
+          <th>Year</th>
+          <th>Subject</th>
+          <th>Time</th>
+          <th>Code</th>
+        </tr>
+        {% for record in attendance|reverse %}
+        <tr>
+          <td>{{ record.id }}</td>
+          <td>{{ record.name }}</td>
+          <td>{{ record.class }}</td>
+          <td>{{ record.year }}</td>
+          <td>{{ record.subject }}</td>
+          <td>{{ record.time }}</td>
+          <td>{{ record.code }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+    {% else %}
+      <p>📭 No attendance records found.</p>
+    {% endif %}
+
+    <p><a href="/">⬅ Back to Home</a></p>
+  </div>
+</body>
+</html>

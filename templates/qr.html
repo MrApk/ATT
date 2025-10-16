@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>QR Code</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>QR Code</h1>
+    <p class="small">Class: <strong>{{ class_name }}</strong>  •  Year: <strong>{{ year }}</strong>  •  Subject: <strong>{{ subject }}</strong></p>
+    <p class="small">Date: {{ date }}</p>
+    <h2 style="color:#27ae60;">Code: {{ code }}</h2>
+    <div style="text-align:center;">
+      <img class="qr-img" id="qrimg" src="/{{ qr_path }}" alt="QR code">
+    </div>
+
+    <p style="text-align:center; margin-top:10px;">
+      <a class="btn" href="/{{ qr_path }}" download="QR_{{ class_name }}_{{ year }}_{{ subject }}_{{ date }}.png">⬇ Download QR</a>
+      &nbsp;
+      <button class="btn" onclick="shareQR()" type="button">📤 Share</button>
+    </p>
+
+    <p style="text-align:center; margin-top:8px;"><a href="{{ url }}" target="_blank" class="small">🔗 Open attendance link</a></p>
+    <p style="text-align:center; margin-top:8px;"><a href="/codes" class="small">⬅ Back to Codes</a></p>
+  </div>
+
+  <script>
+    async function shareQR() {
+      try {
+        const fileUrl = document.getElementById("qrimg").src;
+        const response = await fetch(fileUrl);
+        const blob = await response.blob();
+        const filesArray = [new File([blob], "QR.png", { type: "image/png" })];
+        if (navigator.canShare && navigator.canShare({ files: filesArray })) {
+          await navigator.share({
+            files: filesArray,
+            title: "Class QR Code",
+            text: "Scan this QR to mark attendance."
+          });
+        } else {
+          alert("Sharing not supported. Please download the QR.");
+        }
+      } catch (err) {
+        alert("Error preparing share: " + err.message);
+      }
+    }
+  </script>
+</body>
+</html>

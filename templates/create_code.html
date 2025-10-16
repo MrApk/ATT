@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Create Class Code</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>➕ Create Class Code</h1>
+    <form method="POST" onsubmit="return attachLocation(event)">
+      <label>Select Class:</label>
+      <select name="class_name" required>
+        {% for c in classes %}
+          <option value="{{c}}">{{c}}</option>
+        {% endfor %}
+      </select>
+      
+      <input type="text" name="year" placeholder="Enter Year (e.g. 1st)" required>
+      <input type="text" name="subject" placeholder="Enter Subject" required>
+
+      <!-- hidden fields for location -->
+      <input type="hidden" name="lat" id="lat">
+      <input type="hidden" name="lng" id="lng">
+
+      <button type="submit">Generate Code</button>
+    </form>
+
+    <p style="margin-top: 15px;"><a href="/teacher">⬅ Back to Dashboard</a></p>
+  </div>
+
+  <script>
+    function attachLocation(e){
+      e.preventDefault();
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(pos){
+          document.getElementById("lat").value = pos.coords.latitude;
+          document.getElementById("lng").value = pos.coords.longitude;
+          e.target.submit();
+        }, function(err){
+          alert("⚠️ Location permission required to create class code.\nError: " + err.message);
+        });
+      } else {
+        alert("❌ Your device does not support geolocation.");
+      }
+      return false;
+    }
+  </script>
+</body>
+</html>

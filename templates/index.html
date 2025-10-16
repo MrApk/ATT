@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Smart Attendance System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="https://cdn.jsdelivr.net/gh/Joe12387/detectIncognito@main/dist/es5/detectIncognito.min.js"></script>
+  <script>
+    async function blockIfIncognito() {
+      try {
+        const result = await detectIncognito();
+        console.log("Browser:", result.browserName, "Private:", result.isPrivate);
+
+        if (result.isPrivate) {
+          // 🔒 BLOCK PAGE IN PRIVATE MODE
+          document.body.innerHTML = `
+            <div style="display:flex;align-items:center;justify-content:center;height:100vh;text-align:center;padding:20px;">
+              <h2 style="color:red;">❌ Attendance Not Allowed in ${result.browserName} Private/Incognito Mode.<br><br>
+              Please open this page in a normal browser window.</h2>
+            </div>`;
+          return false;
+        }
+
+        // ✅ Set cookie so server can verify
+        document.cookie = "normal_mode=1; path=/; SameSite=Lax";
+        return true;
+      } catch (err) {
+        console.error("Incognito detection failed:", err);
+        return true; // fallback allow (don't break page)
+      }
+    }
+
+    function fillFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.has("class")) document.getElementById("class_name").value = params.get("class");
+      if (params.has("code")) document.getElementById("class_code").value = params.get("code");
+      if (params.has("year")) document.getElementById("year").value = params.get("year");
+      if (params.has("subject")) document.getElementById("subject").value = params.get("subject");
+    }
+
+    function attachStudentLocation(e) {
+      e.preventDefault();
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(pos){
+          document.getElementById("student_lat").value = pos.coords.latitude;
+          document.getElementById("student_lng").value = pos.coords.longitude;
+          e.target.submit();
+        }, function(){
+          alert("⚠️ Location permission is required to mark attendance.");
+        });
+      } else {
+        alert("❌ Your device does not support geolocation.");
+      }
+      return false;
+    }
+
+    window.addEventListener("load", async () => {
+      const allowed = await blockIfIncognito();
+      if (allowed) fillFromURL();
+    });
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>Smart Attendance</h1>
+    <form method="POST" action="/mark" onsubmit="return attachStudentLocation(event)">
+      <label>Student ID:</label>
+      <input type="text" name="student_id" required>
+
+      <label>Class:</label>
+      <input type="text" id="class_name" name="class_name" required>
+
+      <label>Year:</label>
+      <input type="text" id="year" name="year" required>
+
+      <label>Subject:</label>
+      <input type="text" id="subject" name="subject" required>
+
+      <label>Class Code:</label>
+      <input type="text" id="class_code" name="class_code" required>
+
+      <input type="hidden" name="token" value="{{ token or '' }}">
+      <input type="hidden" name="student_lat" id="student_lat">
+      <input type="hidden" name="student_lng" id="student_lng">
+
+      <button type="submit">Mark Attendance</button>
+    </form>
+    <p><a href="/login">👨‍🏫 Teacher Login</a></p>
+  </div>
+</body>
+</html>

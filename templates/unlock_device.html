@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Unlock Device</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🔑 Unlock Student Device</h1>
+    <p>Enter Student ID to generate an unlock link.</p>
+
+    <form method="POST">
+      <input type="text" name="student_id" placeholder="Enter Student ID" required>
+      <button type="submit">Generate Link</button>
+    </form>
+
+    {% if message %}
+      <p style="margin-top: 15px;">{{ message }}</p>
+    {% endif %}
+
+    {% if link %}
+      <p><strong>Send this link to student:</strong></p>
+      <p><a href="{{ link }}" target="_blank">{{ link }}</a></p>
+    {% endif %}
+
+    <p style="margin-top: 20px;"><a href="/teacher">⬅ Back to Dashboard</a></p>
+  </div>
+</body>
+</html>
